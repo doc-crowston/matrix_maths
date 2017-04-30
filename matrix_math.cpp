@@ -29,9 +29,9 @@ int main ()
 	/*
 	 * To do.
 	 *
-	 *  2.  Add Catch()
-	 *  3.  Unit test multiple 1x1, 2x2, 3x3, 4x4, 5x5, 6x6, 7x7 matrices (doubles).
+	 *  3.  Unit test multiple 2x2, 3x3, 4x4, 5x5, 6x6, 7x7 matrices (doubles).
 	 *  4.  Improve code structure / fine tune implementation.
+	 *      a. Exception name and position.
 	 *  5.  Random number generator.
 	 *  6.  Threading.
 	 *  7.  Test performance on a few systems.

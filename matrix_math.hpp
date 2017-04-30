@@ -1,3 +1,6 @@
+#ifndef CROWSTON_MATRIX_MATH_H
+#define CROWSTON_MATRIX_MATH_H
+
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -159,21 +162,30 @@ namespace matrix_math
 		}
 
 		// Equality relationships.
-		template <index_t RhsHeight, index_t RhsWidth, typename RhsT>
-		bool operator==(const matrix<RhsHeight, RhsWidth, RhsT>& rhs) noexcept
+		template <index_t LhsHeight, index_t LhsWidth, typename LhsT,
+				 index_t RhsHeight, index_t RhsWidth, typename RhsT>
+		friend bool operator==(const matrix<LhsHeight, LhsWidth, LhsT>& lhs, const matrix<RhsHeight, RhsWidth, RhsT>& rhs) noexcept
 		{
-			if (RhsHeight != Height || RhsWidth != Width)
+			using commonT = std::common_type_t<LhsT, RhsT>;
+			const commonT tolerance = T(0.0000001);
+			
+			if (LhsHeight != RhsHeight || LhsWidth != RhsWidth)
 				return false;
-			for (index_t r = 0; r < Height; ++r)
-				for (index_t c = 0; c < Width; ++c)
-					if (storage[r][c] != rhs[r][c])
-							return false;
+			for (index_t r = 0; r < LhsHeight; ++r)
+				for (index_t c = 0; c < LhsWidth; ++c)
+				{
+					if ((lhs[r][c] - rhs[r][c]) > tolerance)
+						return false;
+					if ((rhs[r][c] - lhs[r][c]) > tolerance)
+						return false;
+				}
 			return true;
 		}
-		template <index_t RhsHeight, index_t RhsWidth, typename RhsT>
-		bool operator!=(const matrix<RhsHeight, RhsWidth, RhsT>& rhs) noexcept
+		template <index_t LhsHeight, index_t LhsWidth, typename LhsT, 
+				 index_t RhsHeight, index_t RhsWidth, typename RhsT>
+		friend bool operator!=(const matrix<LhsHeight, LhsWidth, LhsT>& lhs, const matrix<RhsHeight, RhsWidth, RhsT>& rhs) noexcept
 		{
-			return !(*this == rhs);
+			return !(lhs == rhs);
 		}
 
 		// Matrix multiplication.
@@ -215,7 +227,8 @@ namespace matrix_math
             	identity[i][i] = T(1);
         	return identity;
     	}
-
+		
+		// In place inversion.
 		void invert()
 		{
             static_assert(Height == Width);
@@ -224,6 +237,14 @@ namespace matrix_math
             augmented_matrix.row_reduce();
             *this = augmented_matrix.get_right_slice();
         }
+
+		// Return a copy that is inverted.
+		self_t get_inverse() const
+		{
+			self_t mtx{*this};
+			mtx.invert();
+			return mtx;
+		}
 
 		//
 		// Iteration through columns.
@@ -288,5 +309,7 @@ namespace matrix_math
         return concatenation; 
     }
 
-}
+} // End namespace matrix_math.
+
+#endif // End ifndef CROWSTON_MATRIX_MATH_H.
 

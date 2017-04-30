@@ -115,6 +115,5 @@ TEST_CASE( "3x3 matrices.", "[3x3]" )
 		}
 	}	
 
-
 }
 

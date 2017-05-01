@@ -190,33 +190,10 @@ namespace matrix_math
 		}
 
 		// Equality relationships.
-		template <index_t LhsHeight, index_t LhsWidth, typename LhsT,
-				 index_t RhsHeight, index_t RhsWidth, typename RhsT>
-		friend bool operator==(const matrix<LhsHeight, LhsWidth, LhsT>& lhs, 
-				const matrix<RhsHeight, RhsWidth, RhsT>& rhs) noexcept
-		{
-			using commonT = std::common_type_t<LhsT, RhsT>;
-			const commonT tolerance{equality_tolerance};
-			
-			if (LhsHeight != RhsHeight || LhsWidth != RhsWidth)
-				return false;
-			for (index_t r = 0; r < LhsHeight; ++r)
-				for (index_t c = 0; c < LhsWidth; ++c)
-				{
-					if (std::abs(lhs[r][c] - rhs[r][c]) > tolerance)
-						return false;
-					if ((rhs[r][c] - lhs[r][c]) > tolerance)
-						return false;
-				}
-			return true;
-		}
-		template <index_t LhsHeight, index_t LhsWidth, typename LhsT, 
-				 index_t RhsHeight, index_t RhsWidth, typename RhsT>
-		friend bool operator!=(const matrix<LhsHeight, LhsWidth, LhsT>& lhs, 
-				const matrix<RhsHeight, RhsWidth, RhsT>& rhs) noexcept
-		{
-			return !(lhs == rhs);
-		}
+		template <index_t LhsHeight, index_t LhsWidth, typename LhsT, index_t RhsHeight, index_t RhsWidth, typename RhsT>
+		friend bool operator==(const matrix<LhsHeight, LhsWidth, LhsT>& lhs, const matrix<RhsHeight, RhsWidth, RhsT>& rhs) noexcept;
+		template <index_t LhsHeight, index_t LhsWidth, typename LhsT, index_t RhsHeight, index_t RhsWidth, typename RhsT>
+		friend bool operator!=(const matrix<LhsHeight, LhsWidth, LhsT>& lhs, const matrix<RhsHeight, RhsWidth, RhsT>& rhs) noexcept;
 
 		// Matrix multiplication.
 		template <index_t RhsWidth, typename RhsT>
@@ -309,6 +286,31 @@ namespace matrix_math
 			}
 		}; // End of const_column_iterator.
 	}; // End of class matrix.
+
+	// Implementation of equality relations.
+	template <index_t LhsHeight, index_t LhsWidth, typename LhsT, index_t RhsHeight, index_t RhsWidth, typename RhsT>
+	bool operator==(const matrix<LhsHeight, LhsWidth, LhsT>& lhs, const matrix<RhsHeight, RhsWidth, RhsT>& rhs) noexcept
+	{
+		using commonT = std::common_type_t<LhsT, RhsT>;
+		const commonT tolerance{equality_tolerance};
+		
+		if (LhsHeight != RhsHeight || LhsWidth != RhsWidth)
+			return false;
+		for (index_t r = 0; r < LhsHeight; ++r)
+			for (index_t c = 0; c < LhsWidth; ++c)
+			{
+				if (std::abs(lhs[r][c] - rhs[r][c]) > tolerance)
+					return false;
+				if ((rhs[r][c] - lhs[r][c]) > tolerance)
+					return false;
+			}
+		return true;
+	}
+	template <index_t LhsHeight, index_t LhsWidth, typename LhsT, index_t RhsHeight, index_t RhsWidth, typename RhsT>
+	bool operator!=(const matrix<LhsHeight, LhsWidth, LhsT>& lhs, const matrix<RhsHeight, RhsWidth, RhsT>& rhs) noexcept
+	{
+		return !(lhs == rhs);
+	}
 
 	// Helper alias.
 	template <index_t Size, typename T = default_T>

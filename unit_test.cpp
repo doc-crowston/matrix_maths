@@ -113,7 +113,61 @@ TEST_CASE( "3x3 matrices.", "[3x3]" )
 			};
 			CHECK_THROWS( mtx.get_inverse() * mtx == identity );
 		}
+		{
+			square_matrix<3> mtx{ 
+				{ 0,  1,  0}, 
+				{ 0,  0,  1},
+				{ 0,  1,  0}
+			};
+			CHECK_THROWS( mtx.get_inverse() * mtx == identity );
+		}
 	}	
 
+}
+
+TEST_CASE( "4x4 matrices.", "[4x4]" )
+{
+	SECTION( "Invertible matrices." )
+	{
+		const auto identity = square_matrix<4>::get_identity_matrix();
+		{
+			square_matrix<4> mtx{
+				{ 4,  0,  0,  0},
+				{ 0,  0,  2,  0},
+				{ 0,  1,  2,  0},
+				{ 1,  0,  0,  1}
+			};
+			REQUIRE( mtx * mtx.get_inverse() == identity );
+		}
+		{
+			square_matrix<4> mtx{
+				{ 1,  2,  1,  0},
+				{ 2,  1,  1,  1},
+				{-1,  2,  1, -1},
+				{ 1,  1,  1,  2}
+			};
+			REQUIRE( mtx * mtx.get_inverse() == identity );
+		}	
+	}
+}
+
+TEST_CASE( "7x7 matrices.", "[7x7]" )
+{
+	SECTION( "Invertible matrices." )
+	{
+		const auto identity = square_matrix<7>::get_identity_matrix();
+		{
+			square_matrix<7> mtx{
+				{ 1,  2,  3,  4,  0, -1,  0},
+				{ 0,  1,  1,  0,  1,  0,  0},
+				{ 1,  0,  0,  0,  0,  1,  0},
+				{ 0,  2,  2,  2, -2,  1,  3},
+				{ 1,  3,  5,  7,  0, -1,  1},
+				{ 0,  0,  1,  0,  1,  0,  0},
+				{ 9, -2,  0,  0,  0,  2,  0}
+			};
+			REQUIRE( mtx * mtx.get_inverse() == identity );
+		}
+	}
 }
 

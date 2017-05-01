@@ -19,7 +19,7 @@
 #include "matrix_math.hpp"
 
 using counter_t = std::atomic<unsigned>;
-using timer_t = std::chrono::duration<double>;
+using timer = std::chrono::duration<double>;
 
 using namespace matrix_math;
 
@@ -30,14 +30,14 @@ using namespace matrix_math;
 // The total time spent in inversion functions is returned.
 //
 template <index_t Size>
-timer_t time_random_matrices(unsigned test_count, counter_t& singular_count, counter_t& degenerate_count)
+timer time_random_matrices(unsigned test_count, counter_t& singular_count, counter_t& degenerate_count)
 {
 	// Set up our source of random numbers. One seed per thread.
 	thread_local std::random_device seed{};
 	std::mt19937_64 generator{seed()};
 	std::uniform_int_distribution<> distribution(-10, 10);
 
-	timer_t inversion_time_elapsed{0};
+	timer inversion_time_elapsed{0};
 
 	while (test_count-- > 0)
 	{
@@ -74,7 +74,7 @@ int main ()
 	// Counting.
 	counter_t singular_count {0};
 	counter_t degenerate_count {0};
-	timer_t inversion_time {0};
+	timer inversion_time {0};
 	std::mutex timer_mutex;		// Have to use a mutex since atomic<> won't support durations.
 
 	// Thread management.

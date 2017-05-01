@@ -30,7 +30,7 @@ using namespace matrix_math;
 // The total time spent in inversion functions is returned.
 //
 template <index_t Size>
-timer time_random_matrices(unsigned test_count, counter_t& singular_count, counter_t& degenerate_count)
+timer time_random_matrices(unsigned test_count, counter_t& nonsingular_count, counter_t& degenerate_count)
 {
 	// Set up our source of random numbers. One seed per thread.
 	thread_local std::random_device seed{};
@@ -52,7 +52,7 @@ timer time_random_matrices(unsigned test_count, counter_t& singular_count, count
 		try
 		{
 			matrix.invert();
-			++singular_count;
+			++nonsingular_count;
 		}
 		catch (matrix_is_degenerate_error& )
 		{
@@ -72,7 +72,7 @@ int main ()
 	const unsigned thread_count = std::thread::hardware_concurrency();
 
 	// Counting.
-	counter_t singular_count {0};
+	counter_t nonsingular_count {0};
 	counter_t degenerate_count {0};
 	timer inversion_time {0};
 	std::mutex timer_mutex;		// Have to use a mutex since atomic<> won't support durations.
@@ -85,7 +85,7 @@ int main ()
 		pool.emplace_back( std::thread{ [&]
 		{ 
 			auto time = time_random_matrices<7>(
-				test_count/thread_count, singular_count, degenerate_count
+				test_count/thread_count, nonsingular_count, degenerate_count
 			);
 			std::lock_guard<std::mutex> lock(timer_mutex);
 			inversion_time += time;
@@ -96,7 +96,7 @@ int main ()
 	for (auto& t : pool)
 		t.join();
 
-	std::cout << "Singular: " << singular_count << "; " <<
+	std::cout << "Singular: " << nonsingular_count << "; " <<
 		"degenerate: " << degenerate_count << ".\n" <<
 		"Time spent in inversion functions: " << inversion_time.count() << " s.\n" <<
 		"Average inversion time per matrix: " << (inversion_time.count() / test_count) << " s.\n";

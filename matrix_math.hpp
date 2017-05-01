@@ -3,6 +3,9 @@
  *
  * Author: Robert H. Crowston, 2017.
  *
+ *
+ * Requires C++14 or later.
+ *
  */
 
 #ifndef CROWSTON_MATRIX_MATH_H
@@ -247,7 +250,7 @@ namespace matrix_math
 		// Obtain an identity matrix. Only valid for square matrices.
 		static self_t get_identity_matrix()
     	{
-        	static_assert(Height == Width);
+        	static_assert(Height == Width, "Identity matrix only defined for square matrices.");
 			const T Size = Height;
 			self_t identity {};
         	for (index_t i = 0; i < Size; ++i)
@@ -258,7 +261,7 @@ namespace matrix_math
 		// In place inversion. Only valid for square matrices.
 		void invert()
 		{
-            static_assert(Height == Width);
+            static_assert(Height == Width, "Can only invert square matrices.");
 			auto augmented_matrix = horizontal_concat(*this, get_identity_matrix());
             augmented_matrix.row_reduce();
             *this = augmented_matrix.get_right_slice();

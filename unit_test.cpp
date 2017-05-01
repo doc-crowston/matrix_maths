@@ -1,3 +1,16 @@
+/*
+ * Matrix inversion: unit testing.
+ * Just some random examples of invertible and non-invertible matrices I found on the internet.
+ *
+ * Uses the catch testing framework, see https://github.com/philsquared/Catch/blob/master/LICENSE.txt.
+ *
+ * Author: Robert H. Crowston, 2017.
+ *
+ *
+ * Invoke with c++ -std=c++14 -O3
+ *
+ */
+
 #include "matrix_math.hpp"
 
 #define CATCH_CONFIG_MAIN

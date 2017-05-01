@@ -3,6 +3,9 @@
  *
  * Author: Robert H. Crowston, 2017.
  *
+ *
+ * Invoke with c++ -std=c++14 -O3
+ *
  */
 
 #include <atomic>
@@ -24,7 +27,7 @@ using namespace matrix_math;
 // time_random_matrices<>().
 //
 // Produces test_count random square matrices of dimension Size and tries to invert them.
-// The total time in inversion functions is returned.
+// The total time spent in inversion functions is returned.
 //
 template <index_t Size>
 timer_t time_random_matrices(unsigned test_count, counter_t& singular_count, counter_t& degenerate_count)
@@ -63,16 +66,19 @@ timer_t time_random_matrices(unsigned test_count, counter_t& singular_count, cou
 
 int main ()
 {
+	// How many tests to run.
 	const unsigned test_count = 50'000'000;
-	
+	// How many threads on which to execute these tests.	
+	const unsigned thread_count = std::thread::hardware_concurrency();
+
+	// Counting.
 	counter_t singular_count {0};
 	counter_t degenerate_count {0};
 	timer_t inversion_time {0};
 	std::mutex timer_mutex;		// Have to use a mutex since atomic<> won't support durations.
 
-	const unsigned thread_count = std::thread::hardware_concurrency();
+	// Thread management.
 	std::vector<std::thread> pool;
-	
 	// Start threads.
 	for (unsigned t = 0; t < thread_count; ++t)
 	{
